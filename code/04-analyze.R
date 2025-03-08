@@ -35,4 +35,5 @@ g <- ggplot(coef |> dplyr::filter(term != "(Intercept)"), aes(x = term, y = or))
   coord_flip() +
   geom_hline(yintercept = 1)
 
-ggsave(opt$output_fig)
+ggsave(opt$output_fig)  
+
