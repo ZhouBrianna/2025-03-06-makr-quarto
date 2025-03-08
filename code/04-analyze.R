@@ -29,7 +29,8 @@ write_csv(coef, opt$output_coef)
 # plot results
 
 
-ggplot(coef |> dplyr::filter(term != "(Intercept)"), aes(x = term, y = or)) +
+# save the figure first so we don't create the Rplot.pdf file
+g <- ggplot(coef |> dplyr::filter(term != "(Intercept)"), aes(x = term, y = or)) +
   geom_point() +
   coord_flip() +
   geom_hline(yintercept = 1)

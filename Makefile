@@ -1,14 +1,28 @@
-data/clean/titanic_clean.csv: 01-load_clean.R data/original/titanic.csv
-	Rscript 01-load_clean.R --file_path=data/original/titanic.csv --output_path=data/clean/titanic_clean.csv
+.PHONY: all clean report
 
-output/model.RDS: 03-model.R data/clean/titanic_clean.csv
-	Rscript 03-model.R --file_path=data/clean/titanic_clean.csv --output_path=output/model.RDS
+all:
+	# remember to put the code cachanges in the individual rules
+	#Rscript code/01-load_clean.R --file_path=data/original/titanic.csv --output_path=data/clean/titanic_clean.csv
+	#Rscript code/03-model.R --file_path=data/clean/titanic_clean.csv --output_path=output/model.RDS
+	#Rscript code/04-analyze.R --model=output/model.RDS --output_coef=output/coef.csv --output_fig=output/fig.png
+	make clean
+	make index.html
 
-output/coef.csv output/fig.png: 04-analyze.R output/model.RDS
-	Rscript 04-analyze.R --model=output/model.RDS --output_coef=output/coef.csv --output_fig=output/fig.png
+data/clean/titanic_clean.csv: code/01-load_clean.R data/original/titanic.csv
+	Rscript code/01-load_clean.R --file_path=data/original/titanic.csv --output_path=data/clean/titanic_clean.csv
 
-index.html: report.qmd output/coef.csv output/fig.png
-	quarto render report.qmd --output index.html
+output/model.RDS: code/03-model.R data/clean/titanic_clean.csv
+	Rscript code/03-model.R --file_path=data/clean/titanic_clean.csv --output_path=output/model.RDS
+
+output/coef.csv output/fig.png: code/04-analyze.R output/model.RDS
+	Rscript code/04-analyze.R --model=output/model.RDS --output_coef=output/coef.csv --output_fig=output/fig.png
+
+index.html: report/report.qmd output/coef.csv output/fig.png
+	quarto render report/report.qmd
+	mv report/report.html index.html
+
+report:
+	make index.html
 
 clean:
 	rm -f output/*
